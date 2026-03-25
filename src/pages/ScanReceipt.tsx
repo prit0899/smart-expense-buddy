@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { addTransaction } from "@/lib/store";
 import { Category, CATEGORY_CONFIG } from "@/lib/types";
-import { ArrowLeft, Camera, Upload, Loader2, Check, Sparkles } from "lucide-react";
+import { ArrowLeft, Camera, Upload, Loader2, Check, Sparkles, AlertCircle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ScannedData {
   amount: number;
@@ -17,30 +18,42 @@ export default function ScanReceipt() {
   const [preview, setPreview] = useState<string | null>(null);
   const [scanning, setScanning] = useState(false);
   const [scanned, setScanned] = useState<ScannedData | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleFile = (file: File) => {
     const reader = new FileReader();
     reader.onload = () => {
-      setPreview(reader.result as string);
-      simulateScan();
+      const base64 = reader.result as string;
+      setPreview(base64);
+      scanWithAI(base64);
     };
     reader.readAsDataURL(file);
   };
 
-  const simulateScan = () => {
+  const scanWithAI = async (imageBase64: string) => {
     setScanning(true);
     setScanned(null);
-    // Simulate AI processing
-    setTimeout(() => {
-      const mockResults: ScannedData[] = [
-        { amount: 42.50, description: "Whole Foods Market", category: "food" },
-        { amount: 28.99, description: "Shell Gas Station", category: "transport" },
-        { amount: 156.00, description: "Amazon Purchase", category: "shopping" },
-        { amount: 75.00, description: "Monthly Gym Fee", category: "health" },
-      ];
-      setScanned(mockResults[Math.floor(Math.random() * mockResults.length)]);
+    setError(null);
+
+    try {
+      const { data, error: fnError } = await supabase.functions.invoke("scan-receipt", {
+        body: { imageBase64 },
+      });
+
+      if (fnError) throw new Error(fnError.message);
+      if (data?.error) throw new Error(data.error);
+
+      setScanned({
+        amount: data.amount,
+        description: data.description,
+        category: data.category as Category,
+      });
+    } catch (err) {
+      console.error("Scan failed:", err);
+      setError(err instanceof Error ? err.message : "Failed to analyze receipt. Please try again.");
+    } finally {
       setScanning(false);
-    }, 2500);
+    }
   };
 
   const handleConfirm = () => {
@@ -123,6 +136,16 @@ export default function ScanReceipt() {
               )}
             </div>
 
+            {error && (
+              <div className="rounded-xl bg-destructive/10 border border-destructive/20 p-4 flex items-start gap-3 animate-slide-up">
+                <AlertCircle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-foreground">Scan failed</p>
+                  <p className="text-xs text-muted-foreground mt-1">{error}</p>
+                </div>
+              </div>
+            )}
+
             {scanned && (
               <div className="rounded-xl bg-card border border-primary/20 p-4 space-y-4 animate-slide-up">
                 <div className="flex items-center gap-2">
@@ -148,7 +171,7 @@ export default function ScanReceipt() {
                 </div>
 
                 <div className="flex gap-2">
-                  <Button variant="outline" className="flex-1" onClick={() => { setPreview(null); setScanned(null); }}>
+                  <Button variant="outline" className="flex-1" onClick={() => { setPreview(null); setScanned(null); setError(null); }}>
                     Rescan
                   </Button>
                   <Button variant="glow" className="flex-1" onClick={handleConfirm}>
@@ -156,6 +179,18 @@ export default function ScanReceipt() {
                     Confirm
                   </Button>
                 </div>
+              </div>
+            )}
+
+            {!scanning && !scanned && !error && (
+              <div className="flex gap-2">
+                <Button variant="outline" className="flex-1" onClick={() => { setPreview(null); }}>
+                  Cancel
+                </Button>
+                <Button variant="glow" className="flex-1" onClick={() => preview && scanWithAI(preview)}>
+                  <Sparkles className="w-4 h-4" />
+                  Retry Scan
+                </Button>
               </div>
             )}
           </div>
