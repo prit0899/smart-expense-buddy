@@ -1,22 +1,40 @@
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import StatCard from "@/components/StatCard";
 import SpendingChart from "@/components/SpendingChart";
 import TransactionItem from "@/components/TransactionItem";
+import SyncStatus from "@/components/SyncStatus";
 import { getTransactions, getStats, getCategoryBreakdown } from "@/lib/store";
+import { useAuth } from "@/contexts/AuthContext";
+import { startAutoSync } from "@/lib/syncEngine";
+import { toast } from "sonner";
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const transactions = useMemo(() => getTransactions(), []);
   const stats = useMemo(() => getStats(transactions), [transactions]);
   const breakdown = useMemo(() => getCategoryBreakdown(transactions), [transactions]);
   const recent = transactions.slice(0, 4);
 
+  useEffect(() => {
+    if (!user) return;
+    const cleanup = startAutoSync(user.id, ({ synced }) => {
+      if (synced > 0) toast.success(`Auto-synced ${synced} items`, { duration: 2000 });
+    });
+    return cleanup;
+  }, [user]);
+
   return (
     <div className="min-h-screen pb-24 safe-top">
       <header className="px-5 pt-6 pb-4">
-        <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Welcome back</p>
-        <h1 className="text-2xl font-display font-bold text-foreground mt-1">FinTrack</h1>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Welcome back</p>
+            <h1 className="text-2xl font-display font-bold text-foreground mt-1">FinTrack</h1>
+          </div>
+          <SyncStatus />
+        </div>
       </header>
 
       <div className="px-5 grid grid-cols-2 gap-3">
