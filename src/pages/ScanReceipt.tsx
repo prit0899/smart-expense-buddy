@@ -48,6 +48,7 @@ export default function ScanReceipt() {
         amount: data.amount,
         description: data.description,
         category: data.category as Category,
+        type: "expense",
       });
     } catch (err) {
       console.error("Scan failed:", err);
