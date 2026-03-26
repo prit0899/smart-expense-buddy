@@ -10,6 +10,7 @@ interface ScannedData {
   amount: number;
   description: string;
   category: Category;
+  type: "income" | "expense";
 }
 
 export default function ScanReceipt() {
