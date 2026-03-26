@@ -10,6 +10,7 @@ interface ScannedData {
   amount: number;
   description: string;
   category: Category;
+  type: "income" | "expense";
 }
 
 export default function ScanReceipt() {
@@ -47,6 +48,7 @@ export default function ScanReceipt() {
         amount: data.amount,
         description: data.description,
         category: data.category as Category,
+        type: "expense",
       });
     } catch (err) {
       console.error("Scan failed:", err);
@@ -60,7 +62,7 @@ export default function ScanReceipt() {
     if (!scanned) return;
     addTransaction({
       id: crypto.randomUUID(),
-      type: "expense",
+      type: scanned.type,
       amount: scanned.amount,
       category: scanned.category,
       description: scanned.description,
@@ -153,10 +155,35 @@ export default function ScanReceipt() {
                   <p className="text-sm font-semibold text-foreground">AI Detected</p>
                 </div>
 
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setScanned({ ...scanned, type: "expense" })}
+                    className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      scanned.type === "expense"
+                        ? "bg-expense/20 text-expense border border-expense/30"
+                        : "bg-secondary text-muted-foreground border border-border/50"
+                    }`}
+                  >
+                    Expense
+                  </button>
+                  <button
+                    onClick={() => setScanned({ ...scanned, type: "income" })}
+                    className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      scanned.type === "income"
+                        ? "bg-income/20 text-income border border-income/30"
+                        : "bg-secondary text-muted-foreground border border-border/50"
+                    }`}
+                  >
+                    Income
+                  </button>
+                </div>
+
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-xs text-muted-foreground uppercase tracking-wider">Amount</span>
-                    <span className="text-lg font-display font-bold text-expense">${scanned.amount.toFixed(2)}</span>
+                    <span className={`text-lg font-display font-bold ${scanned.type === "income" ? "text-income" : "text-expense"}`}>
+                      ${scanned.amount.toFixed(2)}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-xs text-muted-foreground uppercase tracking-wider">Merchant</span>
