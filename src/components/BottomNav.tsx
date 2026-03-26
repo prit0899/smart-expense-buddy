@@ -1,11 +1,12 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, List, Plus, Camera } from "lucide-react";
+import { LayoutDashboard, List, Plus, Camera, BarChart3 } from "lucide-react";
 
 const NAV_ITEMS = [
-  { path: "/", icon: LayoutDashboard, label: "Dashboard" },
+  { path: "/", icon: LayoutDashboard, label: "Home" },
   { path: "/transactions", icon: List, label: "History" },
   { path: "/add", icon: Plus, label: "Add", isAction: true },
   { path: "/scan", icon: Camera, label: "Scan" },
+  { path: "/analytics", icon: BarChart3, label: "Analytics" },
 ];
 
 export default function BottomNav() {

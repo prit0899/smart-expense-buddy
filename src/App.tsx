@@ -25,6 +25,7 @@ const App = () => (
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/add" element={<AddTransaction />} />
             <Route path="/scan" element={<ScanReceipt />} />
+            <Route path="/analytics" element={<Analytics />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <BottomNav />
