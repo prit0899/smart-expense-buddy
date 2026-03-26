@@ -1,10 +1,12 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { addTransaction } from "@/lib/store";
-import { Category, CATEGORY_CONFIG } from "@/lib/types";
-import { ArrowLeft, Camera, Upload, Loader2, Check, Sparkles, AlertCircle } from "lucide-react";
+import { Category, CATEGORY_CONFIG, EXPENSE_CATEGORIES, INCOME_CATEGORIES } from "@/lib/types";
+import { ArrowLeft, Camera, Upload, Loader2, Check, Sparkles, AlertCircle, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface ScannedData {
   amount: number;
@@ -20,6 +22,7 @@ export default function ScanReceipt() {
   const [scanning, setScanning] = useState(false);
   const [scanned, setScanned] = useState<ScannedData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [editing, setEditing] = useState(false);
 
   const handleFile = (file: File) => {
     const reader = new FileReader();
@@ -44,11 +47,14 @@ export default function ScanReceipt() {
       if (fnError) throw new Error(fnError.message);
       if (data?.error) throw new Error(data.error);
 
+      const detectedCategory = data.category as Category;
+      const isIncomeCategory = INCOME_CATEGORIES.includes(detectedCategory);
+
       setScanned({
         amount: data.amount,
         description: data.description,
-        category: data.category as Category,
-        type: "expense",
+        category: detectedCategory,
+        type: isIncomeCategory ? "income" : "expense",
       });
     } catch (err) {
       console.error("Scan failed:", err);
@@ -56,6 +62,13 @@ export default function ScanReceipt() {
     } finally {
       setScanning(false);
     }
+  };
+
+  const handleTypeChange = (type: "income" | "expense") => {
+    if (!scanned) return;
+    const validCategories = type === "income" ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
+    const newCategory = validCategories.includes(scanned.category) ? scanned.category : validCategories[0];
+    setScanned({ ...scanned, type, category: newCategory });
   };
 
   const handleConfirm = () => {
@@ -70,6 +83,8 @@ export default function ScanReceipt() {
     });
     navigate("/");
   };
+
+  const availableCategories = scanned?.type === "income" ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
 
   return (
     <div className="min-h-screen pb-24 safe-top">
@@ -150,14 +165,23 @@ export default function ScanReceipt() {
 
             {scanned && (
               <div className="rounded-xl bg-card border border-primary/20 p-4 space-y-4 animate-slide-up">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-primary" />
-                  <p className="text-sm font-semibold text-foreground">AI Detected</p>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-primary" />
+                    <p className="text-sm font-semibold text-foreground">AI Detected</p>
+                  </div>
+                  <button
+                    onClick={() => setEditing(!editing)}
+                    className="flex items-center gap-1.5 text-xs font-medium text-primary hover:text-primary/80 transition-colors"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                    {editing ? "Done" : "Edit"}
+                  </button>
                 </div>
 
                 <div className="flex gap-2">
                   <button
-                    onClick={() => setScanned({ ...scanned, type: "expense" })}
+                    onClick={() => handleTypeChange("expense")}
                     className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
                       scanned.type === "expense"
                         ? "bg-expense/20 text-expense border border-expense/30"
@@ -167,7 +191,7 @@ export default function ScanReceipt() {
                     Expense
                   </button>
                   <button
-                    onClick={() => setScanned({ ...scanned, type: "income" })}
+                    onClick={() => handleTypeChange("income")}
                     className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
                       scanned.type === "income"
                         ? "bg-income/20 text-income border border-income/30"
@@ -179,26 +203,69 @@ export default function ScanReceipt() {
                 </div>
 
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-muted-foreground uppercase tracking-wider">Amount</span>
-                    <span className={`text-lg font-display font-bold ${scanned.type === "income" ? "text-income" : "text-expense"}`}>
-                      ${scanned.amount.toFixed(2)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-muted-foreground uppercase tracking-wider">Merchant</span>
-                    <span className="text-sm font-medium text-foreground">{scanned.description}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-muted-foreground uppercase tracking-wider">Category</span>
-                    <span className="text-sm font-medium text-foreground">
-                      {CATEGORY_CONFIG[scanned.category].emoji} {CATEGORY_CONFIG[scanned.category].label}
-                    </span>
-                  </div>
+                  {editing ? (
+                    <>
+                      <div>
+                        <label className="text-xs text-muted-foreground uppercase tracking-wider mb-1.5 block">Amount</label>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          value={scanned.amount}
+                          onChange={e => setScanned({ ...scanned, amount: parseFloat(e.target.value) || 0 })}
+                          className="bg-secondary border-border/50"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-muted-foreground uppercase tracking-wider mb-1.5 block">Description</label>
+                        <Input
+                          value={scanned.description}
+                          onChange={e => setScanned({ ...scanned, description: e.target.value })}
+                          className="bg-secondary border-border/50"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-muted-foreground uppercase tracking-wider mb-1.5 block">Category</label>
+                        <Select
+                          value={scanned.category}
+                          onValueChange={v => setScanned({ ...scanned, category: v as Category })}
+                        >
+                          <SelectTrigger className="bg-secondary border-border/50">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {availableCategories.map(cat => (
+                              <SelectItem key={cat} value={cat}>
+                                {CATEGORY_CONFIG[cat].emoji} {CATEGORY_CONFIG[cat].label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-muted-foreground uppercase tracking-wider">Amount</span>
+                        <span className={`text-lg font-display font-bold ${scanned.type === "income" ? "text-income" : "text-expense"}`}>
+                          ${scanned.amount.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-muted-foreground uppercase tracking-wider">Merchant</span>
+                        <span className="text-sm font-medium text-foreground">{scanned.description}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-muted-foreground uppercase tracking-wider">Category</span>
+                        <span className="text-sm font-medium text-foreground">
+                          {CATEGORY_CONFIG[scanned.category].emoji} {CATEGORY_CONFIG[scanned.category].label}
+                        </span>
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 <div className="flex gap-2">
-                  <Button variant="outline" className="flex-1" onClick={() => { setPreview(null); setScanned(null); setError(null); }}>
+                  <Button variant="outline" className="flex-1" onClick={() => { setPreview(null); setScanned(null); setError(null); setEditing(false); }}>
                     Rescan
                   </Button>
                   <Button variant="glow" className="flex-1" onClick={handleConfirm}>
