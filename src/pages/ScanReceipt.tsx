@@ -62,7 +62,7 @@ export default function ScanReceipt() {
     if (!scanned) return;
     addTransaction({
       id: crypto.randomUUID(),
-      type: "expense",
+      type: scanned.type,
       amount: scanned.amount,
       category: scanned.category,
       description: scanned.description,
