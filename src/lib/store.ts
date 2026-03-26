@@ -1,4 +1,5 @@
 import { Transaction } from "./types";
+import { queueUpsert, queueDelete } from "./syncEngine";
 
 const STORAGE_KEY = "fintrack-transactions";
 
@@ -21,15 +22,36 @@ export function getTransactions(): Transaction[] {
   return JSON.parse(stored);
 }
 
+export function setTransactions(transactions: Transaction[]) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
+}
+
 export function addTransaction(t: Transaction) {
   const all = getTransactions();
   all.unshift(t);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  queueUpsert(t);
 }
 
 export function deleteTransaction(id: string) {
   const all = getTransactions().filter(t => t.id !== id);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  queueDelete(id);
+}
+
+export function mergeCloudData(cloudData: Transaction[]) {
+  const local = getTransactions();
+  const localMap = new Map(local.map(t => [t.id, t]));
+  
+  cloudData.forEach(ct => {
+    if (!localMap.has(ct.id)) {
+      localMap.set(ct.id, ct);
+    }
+  });
+
+  const merged = Array.from(localMap.values()).sort((a, b) => b.date.localeCompare(a.date));
+  setTransactions(merged);
+  return merged;
 }
 
 export function getStats(transactions: Transaction[]) {
