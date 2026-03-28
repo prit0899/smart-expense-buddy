@@ -26,11 +26,11 @@ const App = () => (
           <div className="max-w-lg mx-auto relative">
             <Routes>
               <Route path="/auth" element={<Auth />} />
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/transactions" element={<Transactions />} />
-              <Route path="/add" element={<AddTransaction />} />
-              <Route path="/scan" element={<ScanReceipt />} />
-              <Route path="/analytics" element={<Analytics />} />
+              <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
+              <Route path="/add" element={<ProtectedRoute><AddTransaction /></ProtectedRoute>} />
+              <Route path="/scan" element={<ProtectedRoute><ScanReceipt /></ProtectedRoute>} />
+              <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <BottomNav />
