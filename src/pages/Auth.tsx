@@ -109,13 +109,6 @@ export default function Auth() {
           </button>
         </p>
 
-        {/* Skip for offline use */}
-        <button
-          onClick={() => navigate("/")}
-          className="w-full text-center text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
-        >
-          Continue without account (offline only)
-        </button>
       </div>
     </div>
   );
