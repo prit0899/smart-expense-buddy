@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { addTransaction } from "@/lib/store";
 import { TransactionType, Category, CATEGORY_CONFIG, EXPENSE_CATEGORIES, INCOME_CATEGORIES } from "@/lib/types";
-import { ArrowLeft, Check } from "lucide-react";
+import { ArrowLeft, Check, CalendarDays } from "lucide-react";
 
 export default function AddTransaction() {
   const navigate = useNavigate();
@@ -11,6 +11,7 @@ export default function AddTransaction() {
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState<Category>("food");
   const [description, setDescription] = useState("");
+  const [date, setDate] = useState(() => new Date().toISOString().split("T")[0]);
 
   const categories = type === "expense" ? EXPENSE_CATEGORIES : INCOME_CATEGORIES;
 
@@ -22,7 +23,7 @@ export default function AddTransaction() {
       amount: parseFloat(amount),
       category,
       description: description || CATEGORY_CONFIG[category].label,
-      date: new Date().toISOString().split("T")[0],
+      date,
     });
     navigate("/");
   };
@@ -68,6 +69,20 @@ export default function AddTransaction() {
               value={amount}
               onChange={e => setAmount(e.target.value)}
               className="text-4xl font-display font-bold bg-transparent text-foreground outline-none w-48 text-center tabular-nums placeholder:text-muted-foreground/30"
+            />
+          </div>
+        </div>
+
+        {/* Date */}
+        <div>
+          <p className="text-xs text-muted-foreground mb-2 uppercase tracking-wider">Date</p>
+          <div className="relative">
+            <CalendarDays className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <input
+              type="date"
+              value={date}
+              onChange={e => setDate(e.target.value)}
+              className="w-full bg-card border border-border/50 rounded-xl pl-10 pr-4 py-3 text-sm text-foreground outline-none focus:border-primary/50 transition-colors [color-scheme:dark]"
             />
           </div>
         </div>
