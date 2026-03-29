@@ -190,7 +190,7 @@ export default function Settings() {
           </AnimatedCard>
 
           {/* Security Info */}
-          <AnimatedCard index={4}>
+          <AnimatedCard delay={0.24}>
             <div className="flex items-center gap-3 px-5 py-4 rounded-2xl bg-card border border-border">
               <Shield className="w-5 h-5 text-primary" />
               <div>
