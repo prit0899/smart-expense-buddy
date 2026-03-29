@@ -147,6 +147,7 @@ export default function Analytics() {
   const total = currentBreakdown.reduce((s, d) => s + d.amount, 0);
 
   return (
+    <PageTransition>
     <div className="min-h-screen pb-24 safe-top">
       <header className="px-5 pt-6 pb-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
