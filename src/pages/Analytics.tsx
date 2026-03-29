@@ -373,5 +373,6 @@ export default function Analytics() {
         </div>
       )}
     </div>
+    </PageTransition>
   );
 }
