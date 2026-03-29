@@ -83,7 +83,7 @@ export default function Settings() {
       <div className="min-h-screen bg-background pb-24 px-4 pt-6">
         <motion.div variants={container} initial="hidden" animate="show" className="space-y-6">
           {/* Profile Header */}
-          <AnimatedCard index={0}>
+          <AnimatedCard delay={0}>
             <div className="flex items-center gap-4 p-5 rounded-2xl bg-card border border-border">
               <Avatar className="h-14 w-14 border-2 border-primary">
                 <AvatarFallback className="bg-primary/15 text-primary text-lg font-bold">
