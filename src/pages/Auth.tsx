@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
@@ -32,7 +33,8 @@ export default function Auth() {
     if (error) {
       toast.error(error.message);
     } else if (mode === "signup") {
-      toast.success("Check your email to verify your account!");
+      toast.success("Account created! You're now signed in.");
+      navigate("/");
     } else {
       navigate("/");
     }
@@ -40,12 +42,22 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 bg-background">
-      <div className="w-full max-w-sm space-y-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="w-full max-w-sm space-y-8"
+      >
         {/* Logo */}
         <div className="text-center space-y-2">
-          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.15, type: "spring", stiffness: 200 }}
+            className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4"
+          >
             <Sparkles className="w-8 h-8 text-primary" />
-          </div>
+          </motion.div>
           <h1 className="text-3xl font-display font-bold text-foreground">FinTrack</h1>
           <p className="text-sm text-muted-foreground">
             {mode === "login" ? "Welcome back! Sign in to continue." : "Create an account to get started."}
@@ -55,7 +67,7 @@ export default function Auth() {
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-3">
-            <div className="relative">
+            <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 type="email"
@@ -65,8 +77,8 @@ export default function Auth() {
                 className="pl-10 h-12 bg-card border-border/50 rounded-xl"
                 required
               />
-            </div>
-            <div className="relative">
+            </motion.div>
+            <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }} className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 type="password"
@@ -77,25 +89,27 @@ export default function Auth() {
                 minLength={6}
                 required
               />
-            </div>
+            </motion.div>
           </div>
 
-          <Button
-            type="submit"
-            variant="glow"
-            size="lg"
-            className="w-full h-12 rounded-xl font-semibold"
-            disabled={loading}
-          >
-            {loading ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
-            ) : (
-              <>
-                {mode === "login" ? "Sign In" : "Create Account"}
-                <ArrowRight className="w-4 h-4" />
-              </>
-            )}
-          </Button>
+          <motion.div whileTap={{ scale: 0.98 }}>
+            <Button
+              type="submit"
+              variant="glow"
+              size="lg"
+              className="w-full h-12 rounded-xl font-semibold"
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <>
+                  {mode === "login" ? "Sign In" : "Create Account"}
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
+            </Button>
+          </motion.div>
         </form>
 
         {/* Toggle */}
@@ -108,8 +122,7 @@ export default function Auth() {
             {mode === "login" ? "Sign Up" : "Sign In"}
           </button>
         </p>
-
-      </div>
+      </motion.div>
     </div>
   );
 }
