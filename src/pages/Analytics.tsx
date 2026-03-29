@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import PageTransition from "@/components/PageTransition";
 import { ArrowLeft, TrendingUp, TrendingDown, BarChart3, RefreshCw, CalendarDays, Download } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { getTransactions, getStats, getCategoryBreakdown } from "@/lib/store";
