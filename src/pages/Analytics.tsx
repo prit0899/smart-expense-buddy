@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import PageTransition from "@/components/PageTransition";
 import { ArrowLeft, TrendingUp, TrendingDown, BarChart3, RefreshCw, CalendarDays, Download } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { getTransactions, getStats, getCategoryBreakdown } from "@/lib/store";
@@ -145,6 +147,7 @@ export default function Analytics() {
   const total = currentBreakdown.reduce((s, d) => s + d.amount, 0);
 
   return (
+    <PageTransition>
     <div className="min-h-screen pb-24 safe-top">
       <header className="px-5 pt-6 pb-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -370,5 +373,6 @@ export default function Analytics() {
         </div>
       )}
     </div>
+    </PageTransition>
   );
 }
