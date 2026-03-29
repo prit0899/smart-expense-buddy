@@ -100,7 +100,7 @@ export default function Settings() {
           </AnimatedCard>
 
           {/* Appearance */}
-          <AnimatedCard index={1}>
+          <AnimatedCard delay={0.06}>
             <div className="rounded-2xl bg-card border border-border overflow-hidden">
               <div className="px-5 py-3">
                 <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Appearance</h2>
