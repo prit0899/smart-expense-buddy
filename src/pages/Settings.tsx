@@ -121,7 +121,7 @@ export default function Settings() {
           </AnimatedCard>
 
           {/* Data Export */}
-          <AnimatedCard index={2}>
+          <AnimatedCard delay={0.12}>
             <div className="rounded-2xl bg-card border border-border overflow-hidden">
               <div className="px-5 py-3">
                 <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Data Export</h2>
