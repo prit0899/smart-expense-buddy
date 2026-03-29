@@ -12,6 +12,7 @@ import AddTransaction from "@/pages/AddTransaction";
 import ScanReceipt from "@/pages/ScanReceipt";
 import Analytics from "@/pages/Analytics";
 import Auth from "@/pages/Auth";
+import Settings from "@/pages/Settings";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
               <Route path="/add" element={<ProtectedRoute><AddTransaction /></ProtectedRoute>} />
               <Route path="/scan" element={<ProtectedRoute><ScanReceipt /></ProtectedRoute>} />
               <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+              <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <BottomNav />

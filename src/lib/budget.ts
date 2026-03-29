@@ -5,6 +5,10 @@ export interface BudgetLimit {
   limit: number;
 }
 
+export function clearBudgets() {
+  localStorage.removeItem(BUDGET_KEY);
+}
+
 export function getBudgets(): BudgetLimit[] {
   const stored = localStorage.getItem(BUDGET_KEY);
   return stored ? JSON.parse(stored) : [];
