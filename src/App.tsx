@@ -32,6 +32,7 @@ const App = () => (
               <Route path="/add" element={<ProtectedRoute><AddTransaction /></ProtectedRoute>} />
               <Route path="/scan" element={<ProtectedRoute><ScanReceipt /></ProtectedRoute>} />
               <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+              <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <BottomNav />
