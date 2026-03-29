@@ -108,7 +108,7 @@ export default function Settings() {
               <Separator />
               <div className="flex items-center justify-between px-5 py-4">
                 <div className="flex items-center gap-3">
-                  {darkMode ? <Moon className="w-5 h-5 text-accent" /> : <Sun className="w-5 h-5 text-yellow-400" />}
+                  {darkMode ? <Moon className="w-5 h-5 text-accent" /> : <Sun className="w-5 h-5 text-accent" />}
                   <span className="text-sm font-medium text-foreground">Dark Mode</span>
                 </div>
                 <Switch
