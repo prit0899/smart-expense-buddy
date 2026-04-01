@@ -157,6 +157,9 @@ export default function Dashboard() {
         <AnimatedCard delay={0.35} className="mt-5 px-5">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-semibold text-foreground">Spending Breakdown</h2>
+            <button onClick={() => navigate("/analytics")} className="text-xs text-primary font-medium">
+              Full Analytics →
+            </button>
           </div>
           <div className="rounded-xl bg-card border border-border/50 p-4">
             <SpendingChart data={breakdown} />
