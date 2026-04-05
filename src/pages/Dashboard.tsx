@@ -10,6 +10,7 @@ import StreakCard from "@/components/StreakCard";
 import SmartAlerts from "@/components/SmartAlerts";
 import PageTransition from "@/components/PageTransition";
 import AnimatedCard from "@/components/AnimatedCard";
+import AdBanner from "@/components/AdBanner";
 import { getTransactions, getStats, getCategoryBreakdown } from "@/lib/store";
 import { useAuth } from "@/contexts/AuthContext";
 import { startAutoSync } from "@/lib/syncEngine";
@@ -153,6 +154,11 @@ export default function Dashboard() {
             </div>
           </AnimatedCard>
         )}
+
+        {/* Ad Banner */}
+        <div className="mt-5 px-5">
+          <AdBanner adSlot="YOUR_AD_SLOT_1" adFormat="horizontal" />
+        </div>
 
         <AnimatedCard delay={0.35} className="mt-5 px-5">
           <div className="flex items-center justify-between mb-3">
