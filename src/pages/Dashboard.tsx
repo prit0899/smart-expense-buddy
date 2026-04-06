@@ -11,6 +11,7 @@ import SmartAlerts from "@/components/SmartAlerts";
 import PageTransition from "@/components/PageTransition";
 import AnimatedCard from "@/components/AnimatedCard";
 import AdBanner from "@/components/AdBanner";
+import PortfolioWidget from "@/components/portfolio/PortfolioWidget";
 import { getTransactions, getStats, getCategoryBreakdown } from "@/lib/store";
 import { useAuth } from "@/contexts/AuthContext";
 import { startAutoSync } from "@/lib/syncEngine";
@@ -112,8 +113,13 @@ export default function Dashboard() {
           </AnimatedCard>
         </div>
 
-        {/* Streak Tracking */}
+        {/* Portfolio Widget */}
         <AnimatedCard delay={0.2} className="mt-5 px-5">
+          <PortfolioWidget />
+        </AnimatedCard>
+
+        {/* Streak Tracking */}
+        <AnimatedCard delay={0.25} className="mt-5 px-5">
           <div className="flex items-center gap-2 mb-3">
             <Flame className="w-4 h-4 text-orange-400" />
             <h2 className="text-sm font-semibold text-foreground">Tracking Streaks</h2>
