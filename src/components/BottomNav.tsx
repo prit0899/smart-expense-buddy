@@ -1,12 +1,12 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { LayoutDashboard, List, Plus, Camera, Settings } from "lucide-react";
+import { LayoutDashboard, List, Plus, Briefcase, Settings } from "lucide-react";
 
 const NAV_ITEMS = [
   { path: "/", icon: LayoutDashboard, label: "Home" },
   { path: "/transactions", icon: List, label: "History" },
   { path: "/add", icon: Plus, label: "Add", isAction: true },
-  { path: "/scan", icon: Camera, label: "Scan" },
+  { path: "/portfolio", icon: Briefcase, label: "Portfolio" },
   { path: "/settings", icon: Settings, label: "Settings" },
 ];
 
