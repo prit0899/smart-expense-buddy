@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      portfolio_holdings: {
+        Row: {
+          category: string
+          created_at: string
+          current_value: number
+          holding_type: string
+          id: string
+          invested_amount: number
+          name: string
+          nav: number
+          units: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          current_value?: number
+          holding_type?: string
+          id?: string
+          invested_amount?: number
+          name: string
+          nav?: number
+          units?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          current_value?: number
+          holding_type?: string
+          id?: string
+          invested_amount?: number
+          name?: string
+          nav?: number
+          units?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           amount: number
