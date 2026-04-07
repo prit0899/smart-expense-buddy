@@ -6,7 +6,6 @@ import { getTransactions, setTransactions } from "@/lib/store";
 import { getBudgets, clearBudgets } from "@/lib/budget";
 import PageTransition from "@/components/PageTransition";
 import AnimatedCard from "@/components/AnimatedCard";
-import AdBanner from "@/components/AdBanner";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -200,11 +199,6 @@ export default function Settings() {
               </div>
             </div>
           </AnimatedCard>
-
-          {/* Ad Banner */}
-          <div className="mt-2">
-            <AdBanner adSlot="1362799738" adFormat="horizontal" />
-          </div>
         </motion.div>
       </div>
     </PageTransition>
