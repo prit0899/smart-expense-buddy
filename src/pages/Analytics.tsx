@@ -7,6 +7,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, 
 import { getTransactions, getStats, getCategoryBreakdown } from "@/lib/store";
 import { CATEGORY_CONFIG, Category, Transaction } from "@/lib/types";
 import * as XLSX from "xlsx";
+import AdBanner from "@/components/AdBanner";
 
 const COLORS = [
   "hsl(153 60% 50%)",
@@ -372,6 +373,10 @@ export default function Analytics() {
           )}
         </div>
       )}
+
+      <div className="mt-5 px-5 pb-4">
+        <AdBanner adSlot="YOUR_AD_SLOT_3" adFormat="horizontal" />
+      </div>
     </div>
     </PageTransition>
   );

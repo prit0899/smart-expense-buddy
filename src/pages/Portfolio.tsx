@@ -10,6 +10,7 @@ import HoldingCard from "@/components/portfolio/HoldingCard";
 import AddHoldingForm from "@/components/portfolio/AddHoldingForm";
 import AnalysisView from "@/components/portfolio/AnalysisView";
 import ChatView from "@/components/portfolio/ChatView";
+import AdBanner from "@/components/AdBanner";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Plus, BarChart3, MessageCircle, Briefcase, Loader2 } from "lucide-react";
@@ -168,6 +169,10 @@ export default function Portfolio() {
               <ChatView holdings={holdings} />
             </TabsContent>
           </Tabs>
+        </div>
+
+        <div className="mt-5 px-5 pb-4">
+          <AdBanner adSlot="YOUR_AD_SLOT_4" adFormat="horizontal" />
         </div>
       </div>
     </PageTransition>
