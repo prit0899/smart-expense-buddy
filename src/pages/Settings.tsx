@@ -200,6 +200,11 @@ export default function Settings() {
               </div>
             </div>
           </AnimatedCard>
+
+          {/* Ad Banner */}
+          <div className="mt-2">
+            <AdBanner adSlot="1362799738" adFormat="horizontal" />
+          </div>
         </motion.div>
       </div>
     </PageTransition>
