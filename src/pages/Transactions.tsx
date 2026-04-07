@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
+import AdBanner from "@/components/AdBanner";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, CalendarDays, X } from "lucide-react";
 import { format } from "date-fns";
@@ -165,6 +166,10 @@ export default function Transactions() {
               ))
             )}
           </AnimatePresence>
+        </div>
+
+        <div className="mt-5 px-5">
+          <AdBanner adSlot="YOUR_AD_SLOT_2" adFormat="horizontal" />
         </div>
       </div>
     </PageTransition>
