@@ -204,6 +204,7 @@ export default function Dashboard() {
                 transition={{ delay: 0.5 + i * 0.06 }}
               >
                 <TransactionItem transaction={t} />
+                {i === 2 && <InFeedAd adSlot="1362799738" className="mt-2" />}
               </motion.div>
             ))}
           </div>

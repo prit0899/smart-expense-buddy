@@ -163,6 +163,7 @@ export default function Transactions() {
                   layout
                 >
                   <TransactionItem transaction={t} onDelete={handleDelete} />
+                  {i === 4 && <InFeedAd adSlot="1362799738" className="mt-2" />}
                 </motion.div>
               ))
             )}
