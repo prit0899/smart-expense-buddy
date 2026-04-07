@@ -12,7 +12,7 @@ interface AdBannerProps {
   className?: string;
 }
 
-const AD_CLIENT = "ca-pub-5542851536360481";
+const AD_CLIENT = "ca-pub-1131617987004465";
 
 export default function AdBanner({ adSlot, adFormat = "auto", className = "" }: AdBannerProps) {
   const adRef = useRef<HTMLModElement>(null);
