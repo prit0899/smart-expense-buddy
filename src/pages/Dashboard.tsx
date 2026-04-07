@@ -163,7 +163,7 @@ export default function Dashboard() {
 
         {/* Ad Banner */}
         <div className="mt-5 px-5">
-          <AdBanner adSlot="YOUR_AD_SLOT_1" adFormat="horizontal" />
+          <AdBanner adSlot="1362799738" adFormat="horizontal" />
         </div>
 
         <AnimatedCard delay={0.35} className="mt-5 px-5">
