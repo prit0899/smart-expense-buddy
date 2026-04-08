@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import AdBanner from "@/components/AdBanner";
-import InFeedAd from "@/components/InFeedAd";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, CalendarDays, X } from "lucide-react";
 import { format } from "date-fns";
