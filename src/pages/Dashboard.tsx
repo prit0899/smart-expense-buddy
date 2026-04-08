@@ -11,7 +11,7 @@ import SmartAlerts from "@/components/SmartAlerts";
 import PageTransition from "@/components/PageTransition";
 import AnimatedCard from "@/components/AnimatedCard";
 import AdBanner from "@/components/AdBanner";
-import InFeedAd from "@/components/InFeedAd";
+
 import PortfolioWidget from "@/components/portfolio/PortfolioWidget";
 import { getTransactions, getStats, getCategoryBreakdown } from "@/lib/store";
 import { useAuth } from "@/contexts/AuthContext";
@@ -204,7 +204,6 @@ export default function Dashboard() {
                 transition={{ delay: 0.5 + i * 0.06 }}
               >
                 <TransactionItem transaction={t} />
-                {i === 2 && <InFeedAd adSlot="1362799738" className="mt-2" />}
               </motion.div>
             ))}
           </div>

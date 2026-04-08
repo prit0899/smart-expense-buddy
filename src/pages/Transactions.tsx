@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import AdBanner from "@/components/AdBanner";
-import InFeedAd from "@/components/InFeedAd";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, CalendarDays, X } from "lucide-react";
 import { format } from "date-fns";
@@ -163,7 +163,6 @@ export default function Transactions() {
                   layout
                 >
                   <TransactionItem transaction={t} onDelete={handleDelete} />
-                  {i === 4 && <InFeedAd adSlot="1362799738" className="mt-2" />}
                 </motion.div>
               ))
             )}

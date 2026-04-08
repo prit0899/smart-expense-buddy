@@ -11,7 +11,7 @@ interface InFeedAdProps {
   className?: string;
 }
 
-const AD_CLIENT = "ca-pub-1131617987004465";
+const AD_CLIENT = "ca-pub-5542851536360481";
 
 export default function InFeedAd({ adSlot, className = "" }: InFeedAdProps) {
   const pushed = useRef(false);
