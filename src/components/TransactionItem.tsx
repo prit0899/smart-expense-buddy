@@ -1,5 +1,6 @@
 import { Transaction, CATEGORY_CONFIG } from "@/lib/types";
 import { Trash2 } from "lucide-react";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 interface Props {
   transaction: Transaction;
@@ -9,6 +10,7 @@ interface Props {
 export default function TransactionItem({ transaction, onDelete }: Props) {
   const { emoji, label } = CATEGORY_CONFIG[transaction.category];
   const isIncome = transaction.type === "income";
+  const { currency } = useCurrency();
 
   return (
     <div className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border/50 group animate-fade-in">
@@ -20,7 +22,7 @@ export default function TransactionItem({ transaction, onDelete }: Props) {
         <p className="text-xs text-muted-foreground">{label} · {new Date(transaction.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</p>
       </div>
       <p className={`text-sm font-semibold font-display tabular-nums ${isIncome ? "text-income" : "text-expense"}`}>
-        {isIncome ? "+" : "-"}${transaction.amount.toFixed(2)}
+        {isIncome ? "+" : "-"}{currency.symbol}{transaction.amount.toFixed(2)}
       </p>
       {onDelete && (
         <button

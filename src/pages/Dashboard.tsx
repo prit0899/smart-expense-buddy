@@ -15,12 +15,13 @@ import AdBanner from "@/components/AdBanner";
 import PortfolioWidget from "@/components/portfolio/PortfolioWidget";
 import { getTransactions, getStats, getCategoryBreakdown } from "@/lib/store";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import { startAutoSync } from "@/lib/syncEngine";
 import { calculateStreaks, getSmartAlerts } from "@/lib/streaks";
 import { toast } from "sonner";
 import { Target, Lightbulb, Flame, Bell } from "lucide-react";
 
-function getInsights(transactions: ReturnType<typeof getTransactions>) {
+function getInsights(transactions: ReturnType<typeof getTransactions>, symbol: string) {
   const insights: string[] = [];
   const expenses = transactions.filter(t => t.type === "expense");
   const incomes = transactions.filter(t => t.type === "income");
@@ -31,7 +32,7 @@ function getInsights(transactions: ReturnType<typeof getTransactions>) {
       return acc;
     }, {});
     const top = Object.entries(topCat).sort((a, b) => b[1] - a[1])[0];
-    if (top) insights.push(`🔥 Your biggest expense category is ${top[0]} at $${top[1].toFixed(0)}`);
+    if (top) insights.push(`🔥 Your biggest expense category is ${top[0]} at ${symbol}${top[1].toFixed(0)}`);
   }
 
   if (incomes.length > 0 && expenses.length > 0) {
@@ -51,7 +52,7 @@ function getInsights(transactions: ReturnType<typeof getTransactions>) {
     const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
     const dailyAvg = monthTotal / today.getDate();
     const projected = dailyAvg * daysInMonth;
-    insights.push(`📊 Projected spending this month: $${projected.toFixed(0)}`);
+    insights.push(`📊 Projected spending this month: ${symbol}${projected.toFixed(0)}`);
   }
 
   return insights;
@@ -60,11 +61,12 @@ function getInsights(transactions: ReturnType<typeof getTransactions>) {
 export default function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { currency } = useCurrency();
   const transactions = useMemo(() => getTransactions(), []);
   const stats = useMemo(() => getStats(transactions), [transactions]);
   const breakdown = useMemo(() => getCategoryBreakdown(transactions), [transactions]);
   const recent = transactions.slice(0, 4);
-  const insights = useMemo(() => getInsights(transactions), [transactions]);
+  const insights = useMemo(() => getInsights(transactions, currency.symbol), [transactions, currency.symbol]);
   const streaks = useMemo(() => calculateStreaks(transactions), [transactions]);
   const smartAlerts = useMemo(() => getSmartAlerts(transactions), [transactions]);
 

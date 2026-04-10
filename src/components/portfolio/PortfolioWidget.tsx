@@ -1,10 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { usePortfolio } from "@/hooks/usePortfolio";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import { Briefcase, ArrowUpRight, ArrowDownRight } from "lucide-react";
 
 export default function PortfolioWidget() {
   const navigate = useNavigate();
   const { holdings, totals, loading } = usePortfolio();
+  const { currency } = useCurrency();
 
   if (loading || holdings.length === 0) return null;
 
@@ -25,11 +27,11 @@ export default function PortfolioWidget() {
       <div className="grid grid-cols-3 gap-2">
         <div>
           <p className="text-[10px] text-muted-foreground">Invested</p>
-          <p className="text-sm font-bold text-foreground">₹{(totals.invested / 1000).toFixed(1)}K</p>
+          <p className="text-sm font-bold text-foreground">{currency.symbol}{(totals.invested / 1000).toFixed(1)}K</p>
         </div>
         <div>
           <p className="text-[10px] text-muted-foreground">Current</p>
-          <p className="text-sm font-bold text-primary">₹{(totals.current / 1000).toFixed(1)}K</p>
+          <p className="text-sm font-bold text-primary">{currency.symbol}{(totals.current / 1000).toFixed(1)}K</p>
         </div>
         <div>
           <p className="text-[10px] text-muted-foreground">Returns</p>
