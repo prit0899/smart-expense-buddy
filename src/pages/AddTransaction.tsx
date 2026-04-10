@@ -6,9 +6,11 @@ import PageTransition from "@/components/PageTransition";
 import { addTransaction } from "@/lib/store";
 import { TransactionType, Category, CATEGORY_CONFIG, EXPENSE_CATEGORIES, INCOME_CATEGORIES } from "@/lib/types";
 import { ArrowLeft, Check, CalendarDays } from "lucide-react";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 export default function AddTransaction() {
   const navigate = useNavigate();
+  const { currency } = useCurrency();
   const [type, setType] = useState<TransactionType>("expense");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState<Category>("food");
@@ -70,7 +72,7 @@ export default function AddTransaction() {
           >
             <p className="text-xs text-muted-foreground mb-2 uppercase tracking-wider">Amount</p>
             <div className="flex items-center justify-center gap-1">
-              <span className="text-3xl font-display font-bold text-muted-foreground">$</span>
+              <span className="text-3xl font-display font-bold text-muted-foreground">{currency.symbol}</span>
               <input
                 type="number"
                 inputMode="decimal"

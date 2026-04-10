@@ -2,6 +2,7 @@ import { useState } from "react";
 import { CATEGORY_CONFIG, EXPENSE_CATEGORIES, Category } from "@/lib/types";
 import { getBudgets, setBudget, BudgetLimit } from "@/lib/budget";
 import { Target, Check, X } from "lucide-react";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 interface Props {
   spent: Record<string, number>;
@@ -11,6 +12,7 @@ export default function BudgetManager({ spent }: Props) {
   const [budgets, setBudgets] = useState<BudgetLimit[]>(() => getBudgets());
   const [editing, setEditing] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
+  const { currency } = useCurrency();
 
   const handleSave = (category: string) => {
     const val = parseFloat(editValue);
@@ -44,7 +46,7 @@ export default function BudgetManager({ spent }: Props) {
               </span>
               {editing === cat ? (
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xs text-muted-foreground">$</span>
+                  <span className="text-xs text-muted-foreground">{currency.symbol}</span>
                   <input
                     type="number"
                     inputMode="decimal"
@@ -72,7 +74,7 @@ export default function BudgetManager({ spent }: Props) {
                     onClick={() => { setEditing(cat); setEditValue(budget?.limit.toString() || ""); }}
                     className="text-[10px] text-primary font-medium"
                   >
-                    {budget ? `$${budget.limit}` : "Set limit"}
+                    {budget ? `${currency.symbol}${budget.limit}` : "Set limit"}
                   </button>
                 </div>
               )}
@@ -91,10 +93,10 @@ export default function BudgetManager({ spent }: Props) {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className={`text-[10px] font-medium ${over ? "text-expense" : "text-muted-foreground"}`}>
-                    ${catSpent.toFixed(0)} / ${budget.limit.toFixed(0)}
+                    {currency.symbol}{catSpent.toFixed(0)} / {currency.symbol}{budget.limit.toFixed(0)}
                   </span>
                   <span className={`text-[10px] font-semibold ${over ? "text-expense" : "text-primary"}`}>
-                    {over ? `Over by $${(catSpent - budget.limit).toFixed(0)}` : `${(100 - pct).toFixed(0)}% left`}
+                    {over ? `Over by ${currency.symbol}${(catSpent - budget.limit).toFixed(0)}` : `${(100 - pct).toFixed(0)}% left`}
                   </span>
                 </div>
               </>
