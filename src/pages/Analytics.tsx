@@ -8,6 +8,7 @@ import { getTransactions, getStats, getCategoryBreakdown } from "@/lib/store";
 import { CATEGORY_CONFIG, Category, Transaction } from "@/lib/types";
 import * as XLSX from "xlsx";
 import AdBanner from "@/components/AdBanner";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 const COLORS = [
   "hsl(153 60% 50%)",
@@ -110,6 +111,7 @@ function exportToExcel(transactions: Transaction[]) {
 
 export default function Analytics() {
   const navigate = useNavigate();
+  const { currency } = useCurrency();
   const [tab, setTab] = useState<Tab>("expenses");
   const [viewMode, setViewMode] = useState<ViewMode>("monthly");
 
@@ -217,15 +219,15 @@ export default function Analytics() {
       <div className="px-5 grid grid-cols-3 gap-2 mb-5">
         <div className="rounded-xl bg-card border border-border/50 p-3 text-center">
           <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Income</p>
-          <p className="text-sm font-display font-bold text-income">${stats.totalIncome.toLocaleString()}</p>
+          <p className="text-sm font-display font-bold text-income">{currency.symbol}{stats.totalIncome.toLocaleString()}</p>
         </div>
         <div className="rounded-xl bg-card border border-border/50 p-3 text-center">
           <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Expense</p>
-          <p className="text-sm font-display font-bold text-expense">${stats.totalExpense.toLocaleString()}</p>
+          <p className="text-sm font-display font-bold text-expense">{currency.symbol}{stats.totalExpense.toLocaleString()}</p>
         </div>
         <div className="rounded-xl bg-card border border-border/50 p-3 text-center">
           <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Balance</p>
-          <p className="text-sm font-display font-bold text-primary">${stats.balance.toLocaleString()}</p>
+          <p className="text-sm font-display font-bold text-primary">{currency.symbol}{stats.balance.toLocaleString()}</p>
         </div>
       </div>
 
@@ -303,7 +305,7 @@ export default function Analytics() {
                   <div key={item.category} className="space-y-1.5">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-medium text-foreground">{config?.emoji} {config?.label || item.category}</span>
-                      <span className="text-xs font-medium text-foreground tabular-nums">${item.amount.toFixed(2)}</span>
+                      <span className="text-xs font-medium text-foreground tabular-nums">{currency.symbol}{item.amount.toFixed(2)}</span>
                     </div>
                     <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
                       <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: COLORS[i % COLORS.length] }} />
@@ -354,10 +356,10 @@ export default function Analytics() {
                     </div>
                     <div className="flex items-center justify-between pt-1 border-t border-border/30">
                       <span className="text-xs text-muted-foreground">
-                        Avg: <span className={`font-medium ${item.type === "income" ? "text-income" : "text-expense"}`}>${item.avgAmount.toFixed(2)}</span>
+                        Avg: <span className={`font-medium ${item.type === "income" ? "text-income" : "text-expense"}`}>{currency.symbol}{item.avgAmount.toFixed(2)}</span>
                       </span>
                       <span className="text-xs text-muted-foreground">
-                        Total: <span className={`font-medium ${item.type === "income" ? "text-income" : "text-expense"}`}>${item.totalAmount.toFixed(2)}</span>
+                        Total: <span className={`font-medium ${item.type === "income" ? "text-income" : "text-expense"}`}>{currency.symbol}{item.totalAmount.toFixed(2)}</span>
                       </span>
                     </div>
                   </div>
