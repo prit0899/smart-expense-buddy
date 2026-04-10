@@ -1,20 +1,22 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { LogOut, Download, Trash2, Moon, Sun, User, Shield, FileSpreadsheet, ChevronRight } from "lucide-react";
+import { LogOut, Download, Trash2, Moon, Sun, Shield, FileSpreadsheet, ChevronRight, Coins } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCurrency, CURRENCIES } from "@/contexts/CurrencyContext";
 import { getTransactions, setTransactions } from "@/lib/store";
-import { getBudgets, clearBudgets } from "@/lib/budget";
+import { clearBudgets } from "@/lib/budget";
 import PageTransition from "@/components/PageTransition";
 import AnimatedCard from "@/components/AnimatedCard";
-import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
 
 export default function Settings() {
   const { user, signOut } = useAuth();
+  const { currency, setCurrency } = useCurrency();
   const [darkMode, setDarkMode] = useState(true);
   const [confirmClear, setConfirmClear] = useState(false);
 
@@ -33,6 +35,7 @@ export default function Settings() {
         Category: t.category,
         Description: t.description,
         Amount: t.amount,
+        Currency: currency.code,
       }))
     );
     const wb = XLSX.utils.book_new();
@@ -73,6 +76,14 @@ export default function Settings() {
     toast.success("Signed out successfully");
   };
 
+  const handleCurrencyChange = (code: string) => {
+    const selected = CURRENCIES.find(c => c.code === code);
+    if (selected) {
+      setCurrency(selected);
+      toast.success(`Currency changed to ${selected.name} (${selected.symbol})`);
+    }
+  };
+
   const container = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.06 } },
@@ -99,8 +110,36 @@ export default function Settings() {
             </div>
           </AnimatedCard>
 
+          {/* Currency */}
+          <AnimatedCard delay={0.04}>
+            <div className="rounded-2xl bg-card border border-border overflow-hidden">
+              <div className="px-5 py-3">
+                <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Currency</h2>
+              </div>
+              <Separator />
+              <div className="flex items-center justify-between px-5 py-4">
+                <div className="flex items-center gap-3">
+                  <Coins className="w-5 h-5 text-accent" />
+                  <span className="text-sm font-medium text-foreground">Currency</span>
+                </div>
+                <Select value={currency.code} onValueChange={handleCurrencyChange}>
+                  <SelectTrigger className="w-40 text-sm h-9">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {CURRENCIES.map(c => (
+                      <SelectItem key={c.code} value={c.code} className="text-sm">
+                        {c.symbol} {c.code} – {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </AnimatedCard>
+
           {/* Appearance */}
-          <AnimatedCard delay={0.06}>
+          <AnimatedCard delay={0.08}>
             <div className="rounded-2xl bg-card border border-border overflow-hidden">
               <div className="px-5 py-3">
                 <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Appearance</h2>
@@ -121,7 +160,7 @@ export default function Settings() {
           </AnimatedCard>
 
           {/* Data Export */}
-          <AnimatedCard delay={0.12}>
+          <AnimatedCard delay={0.14}>
             <div className="rounded-2xl bg-card border border-border overflow-hidden">
               <div className="px-5 py-3">
                 <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Data Export</h2>
@@ -152,7 +191,7 @@ export default function Settings() {
           </AnimatedCard>
 
           {/* Account Management */}
-          <AnimatedCard delay={0.18}>
+          <AnimatedCard delay={0.2}>
             <div className="rounded-2xl bg-card border border-border overflow-hidden">
               <div className="px-5 py-3">
                 <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Account</h2>
@@ -190,7 +229,7 @@ export default function Settings() {
           </AnimatedCard>
 
           {/* Security Info */}
-          <AnimatedCard delay={0.24}>
+          <AnimatedCard delay={0.26}>
             <div className="flex items-center gap-3 px-5 py-4 rounded-2xl bg-card border border-border">
               <Shield className="w-5 h-5 text-primary" />
               <div>
