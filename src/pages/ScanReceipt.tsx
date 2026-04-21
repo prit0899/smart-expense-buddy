@@ -106,6 +106,15 @@ export default function ScanReceipt() {
       </header>
 
       <div className="px-5 space-y-6">
+        {!subscribed && (
+          <div className="rounded-lg bg-primary/10 border border-primary/20 px-3 py-2 flex items-center justify-between">
+            <p className="text-[11px] text-muted-foreground">
+              <Sparkles className="w-3 h-3 inline mr-1 text-amber-400" />
+              Free: <span className="text-foreground font-medium">{getRemaining("receipt_scans_per_day")}/{FREE_LIMITS.receipt_scans_per_day}</span> scans left today
+            </p>
+            <button onClick={() => navigate("/")} className="text-[11px] text-primary font-semibold">Upgrade</button>
+          </div>
+        )}
         <input
           ref={fileRef}
           type="file"
