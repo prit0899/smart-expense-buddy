@@ -9,6 +9,7 @@ import { CATEGORY_CONFIG, Category, Transaction } from "@/lib/types";
 import * as XLSX from "xlsx";
 import AdBanner from "@/components/AdBanner";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import ProGate from "@/components/ProGate";
 
 const COLORS = [
   "hsl(153 60% 50%)",
@@ -318,21 +319,26 @@ export default function Analytics() {
 
           {/* Monthly bar chart */}
           {monthly.length > 0 && (
-            <div className="rounded-xl bg-card border border-border/50 p-4">
-              <h3 className="text-sm font-semibold text-foreground mb-3">Monthly Overview</h3>
-              <div className="h-48">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={monthly}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(228 10% 20%)" />
-                    <XAxis dataKey="month" tick={{ fontSize: 10, fill: "hsl(215 12% 55%)" }} tickFormatter={v => v.substring(5)} />
-                    <YAxis tick={{ fontSize: 10, fill: "hsl(215 12% 55%)" }} width={45} />
-                    <Tooltip contentStyle={{ backgroundColor: "hsl(228 12% 14%)", border: "1px solid hsl(228 10% 20%)", borderRadius: "8px", fontSize: "12px" }} />
-                    <Bar dataKey="income" fill="hsl(153 60% 50%)" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="expense" fill="hsl(0 72% 55%)" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
+            <ProGate
+              feature="Monthly Trend Chart"
+              description="See your income vs expense trends across months. Pro only."
+            >
+              <div className="rounded-xl bg-card border border-border/50 p-4">
+                <h3 className="text-sm font-semibold text-foreground mb-3">Monthly Overview</h3>
+                <div className="h-48">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={monthly}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(228 10% 20%)" />
+                      <XAxis dataKey="month" tick={{ fontSize: 10, fill: "hsl(215 12% 55%)" }} tickFormatter={v => v.substring(5)} />
+                      <YAxis tick={{ fontSize: 10, fill: "hsl(215 12% 55%)" }} width={45} />
+                      <Tooltip contentStyle={{ backgroundColor: "hsl(228 12% 14%)", border: "1px solid hsl(228 10% 20%)", borderRadius: "8px", fontSize: "12px" }} />
+                      <Bar dataKey="income" fill="hsl(153 60% 50%)" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="expense" fill="hsl(0 72% 55%)" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
-            </div>
+            </ProGate>
           )}
         </div>
       ) : (
