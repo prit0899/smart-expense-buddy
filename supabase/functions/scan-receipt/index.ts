@@ -37,6 +37,19 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+    const MAX_B64_BYTES = 5 * 1024 * 1024; // ~5 MB base64 payload
+    if (typeof imageBase64 !== "string" || imageBase64.length > MAX_B64_BYTES) {
+      return new Response(JSON.stringify({ error: "Image too large (max 5 MB)" }), {
+        status: 413,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (!/^data:image\/(png|jpe?g|webp|gif|heic|heif);base64,/i.test(imageBase64)) {
+      return new Response(JSON.stringify({ error: "Invalid image format" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
@@ -121,7 +134,7 @@ serve(async (req) => {
     });
   } catch (e) {
     console.error("scan-receipt error:", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
+    return new Response(JSON.stringify({ error: "Internal server error. Please try again." }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
