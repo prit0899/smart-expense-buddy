@@ -7,6 +7,9 @@ import { Category, CATEGORY_CONFIG, EXPENSE_CATEGORIES, INCOME_CATEGORIES } from
 import { ArrowLeft, Camera, Upload, Loader2, Check, Sparkles, AlertCircle, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { canUse, incrementUsage, getRemaining, FREE_LIMITS } from "@/lib/freeLimits";
+import { useSubscription } from "@/contexts/SubscriptionContext";
+import { toast } from "sonner";
 
 interface ScannedData {
   amount: number;
@@ -23,8 +26,14 @@ export default function ScanReceipt() {
   const [scanned, setScanned] = useState<ScannedData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
+  const { subscribed } = useSubscription();
 
   const handleFile = (file: File) => {
+    if (!subscribed && !canUse("receipt_scans_per_day")) {
+      toast.error(`Free limit reached (${FREE_LIMITS.receipt_scans_per_day}/day). Upgrade to Pro for unlimited scans.`);
+      navigate("/");
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => {
       const base64 = reader.result as string;
@@ -56,6 +65,7 @@ export default function ScanReceipt() {
         category: detectedCategory,
         type: isIncomeCategory ? "income" : "expense",
       });
+      if (!subscribed) incrementUsage("receipt_scans_per_day");
     } catch (err) {
       console.error("Scan failed:", err);
       setError(err instanceof Error ? err.message : "Failed to analyze receipt. Please try again.");
