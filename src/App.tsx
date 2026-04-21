@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
+import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import BottomNav from "@/components/BottomNav";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Dashboard from "@/pages/Dashboard";
@@ -26,6 +27,7 @@ const App = () => (
       <Sonner />
       <CurrencyProvider>
       <AuthProvider>
+        <SubscriptionProvider>
         <BrowserRouter>
           <div className="max-w-lg mx-auto relative">
             <Routes>
@@ -42,6 +44,7 @@ const App = () => (
             <BottomNav />
           </div>
         </BrowserRouter>
+        </SubscriptionProvider>
       </AuthProvider>
       </CurrencyProvider>
     </TooltipProvider>

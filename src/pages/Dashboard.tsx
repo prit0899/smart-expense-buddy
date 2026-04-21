@@ -11,6 +11,7 @@ import SmartAlerts from "@/components/SmartAlerts";
 import PageTransition from "@/components/PageTransition";
 import AnimatedCard from "@/components/AnimatedCard";
 import AdBanner from "@/components/AdBanner";
+import ProUpgradeCard from "@/components/ProUpgradeCard";
 
 import PortfolioWidget from "@/components/portfolio/PortfolioWidget";
 import { getTransactions, getStats, getCategoryBreakdown } from "@/lib/store";
@@ -115,6 +116,11 @@ export default function Dashboard() {
             <StatCard type="expense" amount={stats.totalExpense} />
           </AnimatedCard>
         </div>
+
+        {/* Pro Subscription */}
+        <AnimatedCard delay={0.18} className="mt-5 px-5">
+          <ProUpgradeCard />
+        </AnimatedCard>
 
         {/* Portfolio Widget */}
         <AnimatedCard delay={0.2} className="mt-5 px-5">
