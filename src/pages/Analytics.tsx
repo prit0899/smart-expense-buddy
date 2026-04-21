@@ -10,6 +10,9 @@ import * as XLSX from "xlsx";
 import AdBanner from "@/components/AdBanner";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import ProGate from "@/components/ProGate";
+import { useSubscription } from "@/contexts/SubscriptionContext";
+import { toast } from "sonner";
+import { Lock } from "lucide-react";
 
 const COLORS = [
   "hsl(153 60% 50%)",
@@ -115,6 +118,7 @@ export default function Analytics() {
   const { currency } = useCurrency();
   const [tab, setTab] = useState<Tab>("expenses");
   const [viewMode, setViewMode] = useState<ViewMode>("monthly");
+  const { subscribed } = useSubscription();
 
   const allTransactions = useMemo(() => getTransactions(), []);
   const months = useMemo(() => getAvailableMonths(allTransactions), [allTransactions]);
@@ -164,10 +168,17 @@ export default function Analytics() {
           </div>
         </div>
         <button
-          onClick={() => exportToExcel(allTransactions)}
+          onClick={() => {
+            if (!subscribed) {
+              toast.error("Excel export is a Pro feature. Upgrade to unlock.");
+              navigate("/");
+              return;
+            }
+            exportToExcel(allTransactions);
+          }}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary/10 text-primary text-xs font-medium hover:bg-primary/20 transition-colors"
         >
-          <Download className="w-3.5 h-3.5" />
+          {subscribed ? <Download className="w-3.5 h-3.5" /> : <Lock className="w-3.5 h-3.5" />}
           Export
         </button>
       </header>
