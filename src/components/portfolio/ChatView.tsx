@@ -3,9 +3,12 @@ import { Holding } from "@/lib/portfolio";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Send, Loader2 } from "lucide-react";
+import { Send, Loader2, Crown, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
+import { canUse, incrementUsage, getRemaining, FREE_LIMITS } from "@/lib/freeLimits";
+import { useSubscription } from "@/contexts/SubscriptionContext";
+import { useNavigate } from "react-router-dom";
 
 interface ChatMsg {
   role: "user" | "assistant";
@@ -24,6 +27,9 @@ export default function ChatView({ holdings }: { holdings: Holding[] }) {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
+  const { subscribed } = useSubscription();
+  const navigate = useNavigate();
+  const [remaining, setRemaining] = useState(() => getRemaining("ai_chat_per_day"));
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -32,6 +38,12 @@ export default function ChatView({ holdings }: { holdings: Holding[] }) {
   const send = async (text?: string) => {
     const msg = text || input.trim();
     if (!msg) return;
+
+    if (!subscribed && !canUse("ai_chat_per_day")) {
+      toast.error(`Free limit reached (${FREE_LIMITS.ai_chat_per_day}/day). Upgrade to Pro for unlimited AI chat.`);
+      return;
+    }
+
     setInput("");
 
     const userMsg: ChatMsg = { role: "user", content: msg };
@@ -55,6 +67,10 @@ export default function ChatView({ holdings }: { holdings: Holding[] }) {
       }
 
       setMessages([...newHistory, { role: "assistant", content: data.reply }]);
+      if (!subscribed) {
+        incrementUsage("ai_chat_per_day");
+        setRemaining(getRemaining("ai_chat_per_day"));
+      }
     } catch {
       setMessages([...newHistory, { role: "assistant", content: "Error connecting. Please try again." }]);
     }
@@ -63,6 +79,20 @@ export default function ChatView({ holdings }: { holdings: Holding[] }) {
 
   return (
     <div className="flex flex-col h-[55vh]">
+      {!subscribed && (
+        <div className="mb-2 flex items-center justify-between rounded-lg bg-primary/10 border border-primary/20 px-3 py-1.5">
+          <p className="text-[11px] text-muted-foreground">
+            <Crown className="w-3 h-3 inline mr-1 text-amber-400" />
+            Free: <span className="text-foreground font-medium">{remaining}/{FREE_LIMITS.ai_chat_per_day}</span> AI chats left today
+          </p>
+          <button
+            onClick={() => navigate("/")}
+            className="flex items-center gap-1 text-[11px] text-primary font-semibold"
+          >
+            <Sparkles className="w-3 h-3" /> Pro
+          </button>
+        </div>
+      )}
       <div className="flex-1 overflow-y-auto space-y-3 mb-3 pr-1">
         {messages.length === 0 && (
           <div className="text-center py-10">
